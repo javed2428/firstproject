@@ -1,0 +1,12 @@
+import scrapy
+from amazon.items import AmazonItem
+class MySpider(scrapy.Spider):
+  name='amazy'
+  allowed_domains=['scrapy.org']
+  start_urls=['http://doc.scrapy.org/en/latest/topics/selectors.html']
+
+  def parse(self,response):
+   for sel in response.xpath("//img/[@class=productImage cfMarker]/@src").extract():
+      item=AmazonItem()
+      item['title']=sel
+      yield item

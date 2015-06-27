@@ -15,8 +15,11 @@ foreach($data_arr as $document){
 }
 
 $newJsonString = json_encode($new_arr);
+
 $newJsonString = str_replace('},{"price"', '}'."\n".'{"price"', $newJsonString); //to change the format of file to be exported to ES
 $newJsonString = str_replace('},{"index"', '}'."\n".'{"index"', $newJsonString); //to change the format of file to be exported to ES
+$newJsonString = str_replace('[{"index"','{"index"',$newJsonString);
+$newJsonString = str_replace('}]','}'."\n ",$newJsonString);
 
 file_put_contents('formatted_output.json',$newJsonString);
 

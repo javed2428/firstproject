@@ -1,5 +1,5 @@
 <?php
-$jsonString = file_get_contents('./amazon-crawler/output.json');
+$jsonString = file_get_contents('./amazon-crawler/new_output.json');
 $data_arr = json_decode($jsonString,true);
 
 
@@ -16,11 +16,11 @@ foreach($data_arr as $document){
 
 $newJsonString = json_encode($new_arr);
 
-$newJsonString = str_replace('},{"price"', '}'."\n".'{"price"', $newJsonString); //to change the format of file to be exported to ES
+$newJsonString = str_replace('},{"tech_details', '}'."\n".'{"tech_details', $newJsonString); //to change the format of file to be exported to ES
 $newJsonString = str_replace('},{"index"', '}'."\n".'{"index"', $newJsonString); //to change the format of file to be exported to ES
 $newJsonString = str_replace('[{"index"','{"index"',$newJsonString);
 $newJsonString = str_replace('}]','}'."\n ",$newJsonString);
 
-file_put_contents('formatted_output.json',$newJsonString);
+file_put_contents('new_formatted_output.json',$newJsonString);
 
 ?>

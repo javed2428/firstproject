@@ -14,3 +14,4 @@ class AmazonItem(Item):
     img_src = Field()
     link = Field()
     tech_details = Field()
+    prod_desc = Field()

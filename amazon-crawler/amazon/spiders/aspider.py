@@ -28,7 +28,7 @@ class MySpider(scrapy.Spider):
             if item['tech_details'] != "":
                 yield item
 
-        href = response.xpath('//a[@id="pagnNextLink"]/@href').extract()[0]
+        href = response.xpath('//a[@id="pagnNextLink"]/@href').extract()[0] #urlparse is for making absolute path(i.e. url) form relative path(i.e. href)
         url = urlparse.urljoin(response.url, href)
         yield scrapy.Request(url, callback=self.parse)
 
@@ -43,23 +43,6 @@ class MySpider(scrapy.Spider):
             feature_map[key] = value
         item = response.meta['item']
         item['tech_details'] = feature_map
+        item['prod_desc'] = response.xpath('.//div[@class="productDescriptionWrapper"]/text()').extract()[0]
         return item
 
-        # def new_parse(self,response):
-        #   res_arr=response.xpath('//li[@class="s-result-item"]')
-        #   for res in res_arr:
-        #         item=AmazonItem()
-        #         link_arr=res.xpath('.//a[@class="a-link-normal a-text-normal"]/@href')
-        #         link=link_arr[0].extract()
-        #         item['link']=link
-        #         item['title']=res.xpath('.//h2[@class="a-size-medium a-color-null s-inline s-access-title a-text-normal"]/text()').extract()[0]
-        #         item['img_src']=res.xpath('.//img[@class="s-access-image cfMarker"]/@src').extract()[0]
-        #         item['price']=res.xpath('.//span[@class="a-size-base a-color-price s-price a-text-bold"]/text()').extract()
-        #         request=scrapy.Request(link,callback=self.tech_details)
-        #         request.meta['item']=item
-        #         yield request
-        #         yield item
-        #
-        #   href=response.xpath('//a[@id="pagnNextLink"]/@href').extract()[0]
-        #   url = urlparse.urljoin(response.url,href)
-        #   yield scrapy.Request(url,callback=self.new_parse)

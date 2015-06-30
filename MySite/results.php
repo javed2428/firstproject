@@ -28,6 +28,7 @@ $params['type'] = 'docs';
 
 $params['body']['size'] = 240;
 
+
 //$params['body']['from'] = $start_index;
 $params['body']['query']['match']['title']['query'] = $query;
 $params['body']['query']['match']['title']['minimum_should_match'] = "50%";
@@ -56,7 +57,6 @@ $end_index = (($end_index < ($total - 1)) ? $end_index : ($total - 1)); //to che
 for ($i = $start_index; $i <= $end_index; $i++) {
     $id = $results['hits']['hits'][$i]['_id'];
     $doc = $results['hits']['hits'][$i]['_source'];
-    $link = $doc['link'];
     $title = $doc['title'];
     $prod_desc = $doc['prod_desc'];
     echo '<p><a class="item-links" href="details.php?id=' .$id  . '">' . $title . '</a></p>';

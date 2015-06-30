@@ -43,25 +43,14 @@ $results = $client->search($params);
 //$doc1   = $results['hits']['hits'][0]['_source']; //$doc is an associative array
 //$doc2 = $results['hits']['hits'][$total - 1]['_source'];
 
-//setcookie('results',$results,time()+(60*60*24),'/');  //for transfering results to next page during pagination
-
 
 //set start and end indices for results page(Pagination)
-
-//if (isset($_GET['page_num'])) {
-//    $start_index = $_GET['page_num'] * 10;
-//    unset($_GET['page_num']);
-//} else { // display items 0-9
-//    $start_index = 0;
-//}
-
-
 
 $end_index = $start_index + 9;
 
 $total = $results['hits']['total'];
 $end_index = (($end_index < ($total - 1)) ? $end_index : ($total - 1)); //to check if $end_index doesn't exceeds $total-1
-echo "start_index={$start_index}  & end_index={$end_index}<br/>";
+
 
 //start Displaying Items and Description Using Pagination
 for ($i = $start_index; $i <= $end_index; $i++) {
@@ -70,7 +59,7 @@ for ($i = $start_index; $i <= $end_index; $i++) {
     $link = $doc['link'];
     $title = $doc['title'];
     $prod_desc = $doc['prod_desc'];
-    echo '<p><a class="item-links" href="' . $link . '">' . $title . '</a></p>';
+    echo '<p><a class="item-links" href="details.php?id=' .$id  . '">' . $title . '</a></p>';
 
     echo '<p>' . $prod_desc . '</p>';
     echo '<br />';

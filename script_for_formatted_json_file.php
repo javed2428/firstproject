@@ -6,13 +6,17 @@ $data_arr = json_decode($jsonString,true);
 $count = 1;
 
 $new_arr=[];
-foreach($data_arr as $document){
+foreach($data_arr as $document) {
 
     $arr = ['index'=>['_id'=>"{$count}"]];
     $new_arr[] = $arr;
     $new_arr[] = $document;
     $count++;
 }
+
+//for ($data_arr as $data_temp) {
+//    json_encode($data_temp);
+//}
 
 $newJsonString = json_encode($new_arr);
 

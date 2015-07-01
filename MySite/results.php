@@ -48,25 +48,48 @@ $params['type'] = 'docs';
 
 $params['body']['size'] = 240;
 
-//$type=filtered/normal query , $brand =match or not brand query , $range = rangeFilter or not
-$brand=0;
-$range=0;
-if(isset($_GET['new_query']) || ($_GET['type']==2)){ //do a filtered query
-    $type=2;
 
-    if(isset($_POST['brand[]']) || ($_GET['brand']==1)){
-        //make a brand match query
-        $brand=1;
-        $params['body']['query']['filtered']['query']['bool']['must']=[['match'=>["Brand"=>"Samsung"]],['match'=>['title'=>"Samsung"]]];
+$brand=0; //brand decides whether brand filter is included or not
+$range=0; //range decides whether range filter is included or not
+if(isset($_GET['new_query']) || ($_GET['type']==2)){ //do a filtered query
+    $type=2; //type decides whether it's normal or filtered query
+
+    if(isset($_POST['brand']) || ($_GET['brand']==1)){
+        //make query logic
+        //make a brand filter
+        if(isset($_POST['brand'])){
+            $brand='';
+            foreach($_POST['brand'] as $string) {
+                $brand .= $string;
+            }
+            unset($_POST['brand']);
+        }else{
+            $brand = $_GET['brand'];
+            unset($_GET['brand']);
+        }
+        //$brand=1;
+        $params['body']['query']['filtered']['query']['bool']['must']=[['match'=>["Brand"=>$brand]],['match'=>['title'=>$query]]];
 
 
     }
-    if(isset($_POST['range']) || ($_GET['range']==1)){
+    if(isset($_POST['range']) || isset($_GET['range'])){
+        //make range logic
+        if(isset($_POST['range'])){
+            $range = $_POST['range'];
+            unset($_POST['range']);
+        } else{
+            $range = $_GET['range'];
+            unset($_GET['range']);
+        }
         //make a range filter
-        $range=1;
-        $params['body']['query']['filtered']['filter']['range']['price']['gte']=0;
-        //i've to write the logic for range and then delete this comment
-        $params['body']['query']['filtered']['filter']['range']['price']['lte']=10000;
+        //$range=1;
+        $lower_bound = (($range/2)-5)*1000;
+        $upper_bound = $lower_bound + 10000;
+        echo "lower bound = {$lower_bound}<br />";
+        echo "upper bound = {$upper_bound}<br />";
+
+        $params['body']['query']['filtered']['filter']['range']['price']['gte']=$lower_bound;
+        $params['body']['query']['filtered']['filter']['range']['price']['lte']=$upper_bound;
 
     }
 
@@ -78,6 +101,13 @@ if(isset($_GET['new_query']) || ($_GET['type']==2)){ //do a filtered query
 $results = $client->search($params);
 
 
+
+//$total_docs = $results['hits']['total'];
+//$milliseconds = $results['took'];
+//$maxScore     = $results['hits']['max_score'];
+//$score = $results['hits']['hits'][0]['_score'];
+//$doc1   = $results['hits']['hits'][0]['_source']; //$doc is an associative array
+//$doc2 = $results['hits']['hits'][$total - 1]['_source'];
 
 
 //set start and end indices for results page(Pagination)

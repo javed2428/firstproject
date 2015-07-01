@@ -10,6 +10,11 @@ foreach($data_arr as $document) {
 
     $arr = ['index'=>['_id'=>"{$count}"]];
     $new_arr[] = $arr;
+
+    foreach($document['tech_details'] as $key=>$value){
+        $document[$key] = $value;
+    }
+    unset($document['tech_details']);
     $new_arr[] = $document;
     $count++;
 }
@@ -24,7 +29,8 @@ $newJsonString = str_replace('},{"tech_details', '}'."\n".'{"tech_details', $new
 $newJsonString = str_replace('},{"index"', '}'."\n".'{"index"', $newJsonString); //to change the format of file to be exported to ES
 $newJsonString = str_replace('[{"index"','{"index"',$newJsonString);
 $newJsonString = str_replace('}]','}'."\n ",$newJsonString);
+$newJsonString = str_replace('},{"prod_desc"', '}'."\n".'{"prod_desc"',$newJsonString);
 
-file_put_contents('new_formatted_output.json',$newJsonString);
+file_put_contents('latest_formatted_output.json',$newJsonString);
 
 ?>

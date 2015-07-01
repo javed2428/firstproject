@@ -48,21 +48,26 @@ $params['type'] = 'docs';
 
 $params['body']['size'] = 240;
 
-
+//$type=filtered/normal query , $brand =match or not brand query , $range = rangeFilter or not
 $brand=0;
 $range=0;
 if(isset($_GET['new_query']) || ($_GET['type']==2)){ //do a filtered query
     $type=2;
 
-    if(isset($_POST['brand']) || ($_GET['brand']==1)){
-        //make a brand filter
+    if(isset($_POST['brand[]']) || ($_GET['brand']==1)){
+        //make a brand match query
         $brand=1;
+        $params['body']['query']['filtered']['query']['bool']['must']=[['match'=>["Brand"=>"Samsung"]],['match'=>['title'=>"Samsung"]]];
 
 
     }
     if(isset($_POST['range']) || ($_GET['range']==1)){
         //make a range filter
         $range=1;
+        $params['body']['query']['filtered']['filter']['range']['price']['gte']=0;
+        //i've to write the logic for range and then delete this comment
+        $params['body']['query']['filtered']['filter']['range']['price']['lte']=10000;
+
     }
 
 }else { //do a normal query
@@ -73,13 +78,6 @@ if(isset($_GET['new_query']) || ($_GET['type']==2)){ //do a filtered query
 $results = $client->search($params);
 
 
-
-//$total_docs = $results['hits']['total'];
-//$milliseconds = $results['took'];
-//$maxScore     = $results['hits']['max_score'];
-//$score = $results['hits']['hits'][0]['_score'];
-//$doc1   = $results['hits']['hits'][0]['_source']; //$doc is an associative array
-//$doc2 = $results['hits']['hits'][$total - 1]['_source'];
 
 
 //set start and end indices for results page(Pagination)

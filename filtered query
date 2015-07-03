@@ -1,0 +1,71 @@
+range filter :
+
+curl -XPOST 'localhost:9200/amazon/_search?pretty' -d '
+{
+ "query": {
+     "filtered":{
+        "query":{"match":{"title":"Google"}},
+         "filter":{"range":{"price":{"gte":0,"lte":30000}}}
+    }
+ }
+}'
+
+brand filter :
+curl -XPOST 'localhost:9200/amazon/_search?pretty' -d '
+{
+ "query": {
+     "filtered":{
+        "query":{"match":{"title":"Google"}},
+         "filter":{"term":{"Brand":"Samsung"}}
+    }
+ }
+}'
+
+range and brand filter :
+
+curl -XPOST 'localhost:9200/amazon/_search?pretty' -d '
+{
+ "query": {
+     "filtered":{
+        "query":{"match":{"title":"Google"}},
+         "filter":{"bool" :{"must":[{"range":{"price":{"gte":0,"lte":30000}}},{"bool":{"should":[{"term":{"Brand":"Google"}}]}}
+]
+}
+}
+    }
+ }
+}'
+
+
+
+
+
+
+
+curl -XPOST 'localhost:9200/amazon/_search?pretty' -d '
+{
+ "query": {
+     "filtered":{
+        "query":{"match":{"Brand":"iBall"}},
+         "filter":{"range":{"price":{"gte":0,"lte":30000}}}
+    }
+ }
+,
+"_source":["price"]
+}'
+
+
+Running bool query :
+
+ curl -XPOST 'localhost:9200/amazon/_search?pretty' -d '
+{
+ "query": {
+     "filtered":{
+        "query":{"bool":{"must":[{"match":{"Brand":"Samsung"}},{"match":{"title":"Samsung"}}]}}
+         
+    }
+ }
+,
+"_source":["price","title"]
+}'
+

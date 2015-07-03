@@ -60,8 +60,10 @@ if(isset($_GET['new_query']) || ($_GET['type']==2)){ //do a filtered query
         if(isset($_POST['brand'])){
             $brand='';
             foreach($_POST['brand'] as $string) {
+                $brand .= ' ';
                 $brand .= $string;
             }
+            echo "<p>Brands : {$brand}</p><br />";
             unset($_POST['brand']);
         }else{
             $brand = $_GET['brand'];
@@ -85,8 +87,7 @@ if(isset($_GET['new_query']) || ($_GET['type']==2)){ //do a filtered query
         //$range=1;
         $lower_bound = (($range/2)-5)*1000;
         $upper_bound = $lower_bound + 10000;
-        echo "lower bound = {$lower_bound}<br />";
-        echo "upper bound = {$upper_bound}<br />";
+
 
         $params['body']['query']['filtered']['filter']['range']['price']['gte']=$lower_bound;
         $params['body']['query']['filtered']['filter']['range']['price']['lte']=$upper_bound;
@@ -124,8 +125,9 @@ for ($i = $start_index; $i <= $end_index; $i++) {
     $doc = $results['hits']['hits'][$i]['_source'];
     $title = $doc['title'];
     $prod_desc = $doc['prod_desc'];
+    $price = $doc['price'];
     echo '<p><a class="item-links" href="details.php?id=' . $id . '">' . $title . '</a></p>';
-
+    echo "<p>Price : {$price}</p>";
     echo '<p>' . $prod_desc . '</p>';
     echo '<br />';
 

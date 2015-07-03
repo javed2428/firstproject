@@ -1,4 +1,4 @@
-<?php
+ice<?php
 $jsonString = file_get_contents('./amazon-crawler/new_output.json');
 $data_arr = json_decode($jsonString,true);
 
@@ -15,6 +15,7 @@ foreach($data_arr as $document) {
         $document[$key] = $value;
     }
     unset($document['tech_details']);
+    $document['price'] = str_replace(',','',$document['price']);
     $new_arr[] = $document;
     $count++;
 }
@@ -30,6 +31,11 @@ $newJsonString = str_replace('},{"index"', '}'."\n".'{"index"', $newJsonString);
 $newJsonString = str_replace('[{"index"','{"index"',$newJsonString);
 $newJsonString = str_replace('}]','}'."\n ",$newJsonString);
 $newJsonString = str_replace('},{"prod_desc"', '}'."\n".'{"prod_desc"',$newJsonString);
+
+
+$newJsonString = str_replace('"price":[', '"price":',$newJsonString);
+$newJsonString = str_replace('],"link"', ',"link"',$newJsonString);
+
 
 file_put_contents('latest_formatted_output.json',$newJsonString);
 

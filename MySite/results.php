@@ -5,7 +5,7 @@
 
 <body>
 
-<?php require "resultsfile.php"; ?>
+<?php require "includes/resultsfile.php"; ?>
 <h3>Apply Some Filters</h3>
 <form method="post" action="results.php?new_query=<?php echo $query?>" >
     Filter By Brand :<br />

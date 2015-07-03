@@ -6,7 +6,7 @@
 
 
 <?php
-require "detailsfile.php";
+require "includes/detailsfile.php";
 
 echo '<h1><a href="' . $link . '">' . $title . '</a></h1>';//Title
 echo '<p><a href="' . $img_src . '"><img src="' . $img_src . '"></a></p>';//image

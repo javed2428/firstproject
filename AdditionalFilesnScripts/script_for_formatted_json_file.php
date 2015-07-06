@@ -1,5 +1,5 @@
 <?php
-$jsonString = file_get_contents('../amazon-crawler/new_output.json');
+$jsonString = file_get_contents('newOutput.json');
 $data_arr = json_decode($jsonString,true);
 
 

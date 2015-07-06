@@ -6,7 +6,7 @@ from amazon.items import AmazonItem
 class MySpider(scrapy.Spider):
     name = 'amazy'
     allowed_domains = ['amazon.in']
-    start_urls = ['http://www.amazon.in/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords=tablets']
+    start_urls = ['http://www.amazon.in/s/ref=sr_nr_n_1?fst=as%3Aoff&rh=n%3A1375458031%2Ck%3Atablets&keywords=tablets&ie=UTF8&qid=1436173981&rnid=3576079031']
 
     def parse(self, response):
         res_arr = response.xpath('//li[@class="s-result-item"]')
@@ -16,7 +16,7 @@ class MySpider(scrapy.Spider):
             link = link_arr[0].extract()
             item['link'] = link
             item['title'] = res.xpath(
-                './/h2[@class="a-size-medium a-color-null s-inline s-access-title a-text-normal"]/text()').extract()[0]
+                './/h2[@class="a-size-base a-color-null s-inline s-access-title a-text-normal"]/text()').extract()[0]
             item['img_src'] = res.xpath('.//img[@class="s-access-image cfMarker"]/@src').extract()[0]
             item['price'] = res.xpath(
                 './/span[@class="a-size-base a-color-price s-price a-text-bold"]/text()').extract()

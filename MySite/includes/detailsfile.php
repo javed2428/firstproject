@@ -1,13 +1,5 @@
 <?php
-//initialize ES
-require '../vendor/autoload.php';
-$client = new Elasticsearch\Client();
-
-//Initialize Predis
-require "../predis/autoload.php";
-Predis\Autoloader::register();
-$redis = new Predis\Client();
-
+require_once 'includes.php';
 
 $index = "amazon";
 $hash = "hash_amazon";

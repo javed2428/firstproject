@@ -1,8 +1,6 @@
 <?php
-//initialize ES
-require '../vendor/autoload.php';
-$client = new Elasticsearch\Client();
 
+require_once 'includes.php';
 //query Elastic Search
 
 if (isset($_POST['query'])) {//means home.php form is submitted
@@ -29,7 +27,7 @@ $brand=0; //brand decides whether brand filter is included or not
 $range=0; //range decides whether range filter is included or not
 if(isset($_GET['new_query']) || ($_GET['type']==2)){ //do a filtered query
     $type=2; //type decides whether it's normal or filtered query
-
+    $brand = $query;
     if(isset($_POST['brand']) || ($_GET['brand']==1)){
         //make query logic
         //make a brand filter

@@ -6,6 +6,7 @@
 <body>
 
 <?php require "includes/resultsfile.php"; ?>
+
 <h3>Apply Some Filters</h3>
 <form method="post" action="results.php?new_query=<?php echo $query?>" >
     Filter By Brand :<br />
@@ -23,8 +24,6 @@
 
 
 <?php
-
-
 //start Displaying Items and Description Using Pagination
 for ($i = $start_index; $i <= $end_index; $i++) {
     $id = $results['hits']['hits'][$i]['_id'];

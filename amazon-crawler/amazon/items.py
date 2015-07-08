@@ -15,3 +15,5 @@ class AmazonItem(Item):
     link = Field()
     tech_details = Field()
     prod_desc = Field()
+    asin = Field()
+    brnd = Field()

@@ -44,5 +44,8 @@ class MySpider(scrapy.Spider):
         item = response.meta['item']
         item['tech_details'] = feature_map
         item['prod_desc'] = response.xpath('.//div[@class="productDescriptionWrapper"]/text()').extract()[0]
+        res = response.xpath('.//div[@class="section techD"]')[1]
+        item['asin'] = res.xpath('.//td/text()').extract()[1]
+        item['brnd'] = response.xpath('.//a[@id="brand"]/text()').extract()[0]
         return item
 

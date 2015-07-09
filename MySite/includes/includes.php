@@ -1,20 +1,16 @@
 <?php
 define('ROOT','/var/www/html/firstproject/MySite');
 define('DS','/');
-
 //initialize ES
 require ROOT.DS.'..'.DS.'vendor/autoload.php';
-
 //Initialize Predis
 require ROOT.DS.'..'.DS."predis/autoload.php";
 Predis\Autoloader::register();
-$redis = new Predis\Client();
+
 
 $index = 'amazon';
 $type = 'docs';
 $size = '240';
-
-
 class ElasticSearch {
     public $index;
     public $type;
@@ -68,7 +64,6 @@ class ElasticSearch {
 
     }
 }
-
 $esObject = new ElasticSearch($index, $type, $size);
 
 //$results = $esObject->matchQuery("Apple","brnd",$client);
@@ -84,6 +79,31 @@ $esObject = new ElasticSearch($index, $type, $size);
 //$allBrands = $esObject->getAllBrands($client);
 //var_dump($allBrands);
 
+$hashmap = 'amazonHashMap';
+class redisHashClass {
+    public $redisClient;
+    public $hashmap;
 
+    public function __construct($hash) {
+        $this->redisClient = new Predis\Client();
+        $this->hashmap = $hash;
+    }
+
+    public function getDetailsById($id ) {//returns associative array of document using json_decode(if found) else NULL
+        $jsonString =  ($this->redisClient->hget($this->hashmap, $id));
+        if($jsonString == NULL){//means no data in redis
+            return NULL;
+        } else {
+            $doc = json_decode($jsonString, true);
+            return $doc;
+        }
+    }
+
+    public function setDetailsById($id, $document) {//store document in redis Hashmap
+        $jsonString = json_encode($document);
+        $this->redisClient->hset($this->hashmap, $id, $jsonString);
+    }
+}
+$redisHashObject = new redisHashClass($hashmap);
 
 ?>

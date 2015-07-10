@@ -15,7 +15,7 @@
         <form method="post" action="results.php?new_query=<?php echo $query ?>">
             <strong>Filter By Brand</strong> :<br/>
             <?php
-            foreach ($allBrands as $brand_key => $brand_value) {
+            foreach ($brands_arr as $brand_key => $brand_value) {
                 echo '<input type="checkbox" name="brand[]" value="' . $brand_key . '">' . $brand_key . "({$brand_value})" . '<br />';
             }
             ?>
@@ -38,7 +38,9 @@
             $title = $doc['title'];
             $prod_desc = $doc['prod_desc'];
             $price = $doc['price'];
+            $brand_name = $doc['brand'];
             echo '<p><a class="item-links" href="details.php?id=' . $id . '">' . $title . '</a></p>';
+            echo "<p>By : {$brand_name}</p>";
             echo "<p>Price : {$price}</p>";
             echo '<p>' . $prod_desc . '</p>';
             echo '<br />';
@@ -50,7 +52,7 @@
         if ($end_index < ($total - 1)) {//means it's not the last page
             $page_num = ($end_index + 1) / 10;
             $end_index++;
-            echo '<a href="results.php?' . "start_index={$end_index}" . "&query={$query}&type={$type}&brands_to_filter={$brands_to_filter}&range={$range}" . '">Next</a>';
+            echo '<a href="results.php?' . "start_index={$end_index}" . "&query={$query}&type={$type}&brand={$brand}&range={$range}" . '">Next</a>';
         }
 
 

@@ -48,4 +48,3 @@ class MySpider(scrapy.Spider):
         item['asin'] = res.xpath('.//td/text()').extract()[1]
         item['brnd'] = response.xpath('.//a[@id="brand"]/text()').extract()[0]
         return item
-

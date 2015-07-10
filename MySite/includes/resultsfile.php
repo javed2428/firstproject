@@ -3,44 +3,60 @@
 require_once 'includes.php';
 //query Elastic Search
 
+
+
 if (isset($_POST['query'])) {//means home.php form is submitted
 
     $query = $_POST['query'];
     $start_index = 0;
-} else if(isset($_GET['new_query'])){ //means filtered form is submitted and post(query) == get(new_query) it's just to return original post(query) via get in filtered form
+} else if(isset($_GET['new_query'])){ //means filtered form is submitted
     $query = $_GET['new_query'];
     $start_index = 0;
 } else {  //means next page link is clicked for pagination
     $query = $_GET['query'];
     $start_index = $_GET['start_index']; //offset for pagination
+
 }
 
 
-$brands_to_filter=0; //brand decides whether brand filter is included or not
-$range=0; //range decides whether range filter is included or not
+$params['index'] = 'amazon';
+$params['type'] = 'docs';
 
+$params['body']['size'] = 240;
+
+
+//$brand=0; //brand decides whether brand filter is included or not
+//$range=0; //range decides whether range filter is included or not
 if(isset($_GET['new_query']) || ($_GET['type']==2)){ //do a filtered query
     $type=2; //type decides whether it's normal or filtered query
-    if(isset($_POST['brand']) || (isset($_GET['brands_to_filter']) && is_string($_GET['brands_to_filter']))){
-
+    $brand = $query;
+    //echo '<p>In Brand Filter</p>';
+    if(isset($_POST['brand']) || isset($_GET['brand'])){
+        //make query logic
+        //make a brand filter
         if(isset($_POST['brand'])){
-            $brands_to_filter = implode(',',$_POST['brand']);
-
-            $brands_to_filter = urlencode($brands_to_filter);
-            //var_dump($brands_to_filter);
-            $brands_to_filter_array = $_POST['brand'];
+            $brand='';
+            foreach($_POST['brand'] as $string) {
+                $brand .= ' ';
+                $brand .= $string;
+            }
             //echo "<p>Brands : {$brand}</p><br />";
+            unset($_POST['brand']);
         }else{
-            $brands_to_filter = urldecode($_GET['brands_to_filter']);
-            $brands_to_filter_array = explode(',',$brands_to_filter);
-            //echo "In Else Part <br />";
-            //var_dump($brands_to_filter);
+            $brand = $_GET['brand'];
+            //echo "<p>{$brand}</p>";
+            unset($_GET['brand']);
         }
-        $results = $esObject->brandFilteredQuery($query, 'title', $brands_to_filter_array);
+        //$brand=1;
+        $temp_query = $brand.' '.$query;
+        //echo "<p>temp_query : {$temp_query}</p><br />";
+        $params['body']['query']['filtered']['query']['bool']['must']=[['match'=>["brand"=>$brand]],['match'=>['title'=>$temp_query]]];
+
+
     }
-    if(isset($_POST['range']) || ($_GET['range'] != 0)){
+    if (isset($_POST['range']) || isset($_GET['range'])) {
         //make range logic
-        if(isset($_POST['range'])){
+        if(isset($_POST['range'])) {
             $range = $_POST['range'];
             unset($_POST['range']);
         } else{
@@ -51,16 +67,22 @@ if(isset($_GET['new_query']) || ($_GET['type']==2)){ //do a filtered query
         //$range=1;
         $lower_bound = (($range/2)-5)*1000;
         $upper_bound = $lower_bound + 10000;
-        if($lower_bound == 20000){ $upper_bound += 100000;}
-        $results = $esObject->rangeFilteredQuery($query, 'title', $lower_bound, $upper_bound);
+        if($lower_bound == 20000 )
+            $upper_bound += 100000;
+
+
+        $params['body']['query']['filtered']['filter']['range']['price']['gte']=$lower_bound;
+        $params['body']['query']['filtered']['filter']['range']['price']['lte']=$upper_bound;
+
     }
 
 }else { //do a normal query
     $type=1;
-    $results = $esObject->matchQuery($query, 'title');
+    $params['body']['query']['match']['title']['query'] = $query;
+    $params['body']['query']['match']['title']['minimum_should_match'] = "50%";
 }
-$allBrands = ElasticSearch::getAllBrands($results);
-
+$results = $client->search($params);
+var_dump($results);
 
 
 //$total_docs = $results['hits']['total'];
@@ -77,3 +99,30 @@ $end_index = $start_index + 9;
 
 $total = $results['hits']['total'];
 $end_index = (($end_index < ($total - 1)) ? $end_index : ($total - 1)); //to check if $end_index doesn't exceeds $total-1
+
+//for including dynamic brand filters
+
+$par['index'] = 'amazon';
+$par['type'] = 'docs';
+
+$par['body']['size'] = 240;
+
+$par['body']['query']['match_all'] = new \stdClass() ;
+$par['body']['_source'] = ["brand"];
+
+$res = $client->search($par);
+$res_arr = $res['hits']['hits'];
+$brands_arr = [];
+foreach($res_arr as $item){
+    $brands_arr[] = $item['_source']['brand'];
+}
+/*
+$jString = file_get_contents('../AdditionalFilesnScripts/newOutput.json');
+$data_arr = json_decode($jString,true);
+$brands_arr = [];
+foreach($data_arr as $element){
+    $brands_arr[] = $element['tech_details']['Brand'];
+}*/
+$brands_arr = array_count_values($brands_arr);
+arsort($brands_arr);
+

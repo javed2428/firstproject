@@ -20,8 +20,7 @@ class MySpider(scrapy.Spider):
             item['img_src'] = res.xpath('.//img[@class="s-access-image cfMarker"]/@src').extract()[0]
             item['price'] = res.xpath(
                 './/span[@class="a-size-base a-color-price s-price a-text-bold"]/text()').extract()
-            item[
-                'tech_details'] = ""  # only for checking if item['tech_details'] is empty or not after tech_details callback is returned(see if item['tech_details'] below)
+            item['tech_details'] = ""  # only for checking if item['tech_details'] is empty or not after tech_details callback is returned(see if item['tech_details'] below)
             request = scrapy.Request(link, callback=self.tech_details)
             request.meta['item'] = item
             yield request

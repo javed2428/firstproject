@@ -1,0 +1,4 @@
+1. ttl
+2. crawled data directly go to mysql
+3. dynamic filters
+4. no need of php script

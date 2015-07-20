@@ -1,0 +1,9 @@
+1. ttl in redis
+2. script to open file line by line
+3. Dynamic Filters
+5. Wt g
+6. Logger
+7. Validation
+
+8. Also store data to mysql
+
